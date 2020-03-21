@@ -7,14 +7,17 @@
 //
 
 import UIKit
+import SwiftUI
 
-class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate,UINavigationControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         nomeTextField.delegate = self
         idadeTextField.delegate = self
         pesoTextField.delegate = self
+        racasTableView.dataSource = self
+        racasTableView.delegate = self
         resultadoView.isHidden = true
         ViewToLabelResultado.layer.cornerRadius = 14
         ViewToLabelResultado.clipsToBounds = true
@@ -26,17 +29,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         areaIdadeButton.clipsToBounds = true
         areaPesoButton.layer.cornerRadius = 14
         areaPesoButton.clipsToBounds = true
-        racasCollectionView.dataSource = self
-        racasCollectionView.delegate = self
         exibirRaca.text = "Ex.: Vira-Lata (SRD)"
-        exibirDesenho.image = UIImage(named: "dog")!
-        viewToCollection.layer.cornerRadius = 14
-        viewToCollection.isHidden = true
+        exibirRaca.textColor = UIColor(red: 0.3608, green: 0.4157, blue: 0.5961, alpha: 1.0)
+        fotoDog.image = UIImage(named: "dog")!
+        fotoDog.layer.cornerRadius = 14
+        fotoDog.clipsToBounds = true
+        viewToTableView.layer.cornerRadius = 14
+        viewToTableView.isHidden = true
     }
     
     var racas: [String] = ["Vira-Lata (SRD)", "Pug", "Maltês", "Shih Tzu", "Buldogue", "Pit Bull", "Spitz Alemão", "Dachshund", "Pastor-Alemão", "Basset", "Schnauzer", "Poodle", "RottWeiler", "Labrador", "Pinscher", "Lhasa Apso", "Golden Retriever", "Yorkshire", "Border Collie", "Beagle"]
-    
-    var racasImagens: [UIImage] = [UIImage(named:"Vira-Lata (SRD)")!, UIImage(named:"Pug")!, UIImage(named:"Maltês")!, UIImage(named:"Shih Tzu")!, UIImage(named:"Buldogue")!, UIImage(named:"Pit Bull")!, UIImage(named: "Spitz Alemão")!, UIImage(named:"Dachshund")!, UIImage(named:"Pastor-Alemão")!, UIImage(named:"Basset")!, UIImage(named:"Schnauzer")!, UIImage(named:"Poodle")!, UIImage(named:"RottWeiler")!, UIImage(named:"Labrador")!, UIImage(named:"Pinscher")!, UIImage(named:"Lhasa Apso")!, UIImage(named:"Golden Retriever")!, UIImage(named:"Yorkshire")!, UIImage(named:"Boder Collie")!, UIImage(named:"Beagle")!]
     
     var dog: Cachorro = Cachorro(nome: "", raca: "", racaDesenho: UIImage(named: "dog")!, idade: 0, peso: 0)
     
@@ -54,7 +56,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     @IBOutlet var exibirRaca: UILabel!
     
-    @IBOutlet var exibirDesenho: UIImageView!
+    @IBOutlet var fotoDog: UIImageView!
     
     @IBOutlet var porteLabel: UILabel!
     
@@ -66,19 +68,71 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     @IBOutlet var resultadoView: UIView!
     
-    @IBOutlet var viewToCollection: UIView!
+    @IBOutlet var viewToTableView: UIView!
     
-    @IBOutlet var racasCollectionView: UICollectionView!
+    @IBOutlet var racasTableView: UITableView!
+    
+    @IBAction func escolherFoto(_ sender: Any) {
+        
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        
+        let actionSheet = UIAlertController(title: "", message: "Tire uma foto do seu dog ou selecione-a na galeria.", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Câmera", style: .default, handler: { (action:UIAlertAction) in
+            
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePickerController.sourceType = .camera
+                self.present(imagePickerController, animated: true, completion: nil )
+                self.viewToTableView.isHidden = false
+            } else {
+                let alert = UIAlertController(title: "", message: "Câmera não disponível.", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Certo", style: UIAlertAction.Style.default, handler: nil))
+                self.present(alert,animated: true, completion: nil)
+                self.viewToTableView.isHidden = false
+            }
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Galeria", style: .default, handler: { (action:UIAlertAction) in imagePickerController.sourceType = .photoLibrary
+            self.present(imagePickerController, animated: true, completion: nil )
+            self.viewToTableView.isHidden = false
+        }))
+        
+        if fotoDog.image != UIImage(named: "dog")! {
+            actionSheet.addAction(UIAlertAction(title: "Apagar Foto", style: .destructive, handler: { (action:UIAlertAction) in
+                self.fotoDog.image = UIImage(named: "dog")!
+                self.viewToTableView.isHidden = false
+            }))
+        }
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+        
+        self.present(actionSheet, animated: true, completion: nil)
+        
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+        fotoDog.image = image
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
     
     @IBAction func tapGesture(_ sender: Any) {
         nomeTextField.resignFirstResponder()
         idadeTextField.resignFirstResponder()
         pesoTextField.resignFirstResponder()
-        viewToCollection.isHidden = true
+        viewToTableView.isHidden = true
+        nomeTextField.isEnabled = true
     }
     
     @IBAction func areaRacaAction(_ sender: Any) {
-        viewToCollection.isHidden = false
+        viewToTableView.isHidden = false
+        nomeTextField.isEnabled = false
+        //abrir a view da table view quando clicar na área da foto
     }
     
     @IBAction func calcularButton(_ sender: UIButton) {
@@ -105,7 +159,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             mostrarPorte()
             resultadoView.isHidden = false
         }
-        
     }
     
     @IBAction func informacaoButton(_ sender: UIButton) {
@@ -123,7 +176,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     func lerNome() -> String {
         let nome = nomeTextField.text!
-        
         return nome
     }
     
@@ -211,46 +263,24 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         ///outra forma: let resultString = "\(resultado)"
         /// resultadoLabel.text = resultStrin
         let resultString = String(format:"%.2f",resultado)
-        resultadoLabel.text = "A previsão é que \(dog.nomeTexto) esteja com \(resultString) quilos quando estiver com um ano de idade. \(MedidaCertaParaRaca())"
+        resultadoLabel.text = "A previsão é que \(dog.nomeTexto) tenha \(resultString) quilos quando estiver com um ano de idade. \(MedidaCertaParaRaca())"
     }
     
-    /* func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-     return racas[row]
-     }
-     
-     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-     return 1
-     }
-     
-     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-     return racas.count
-     }
-     
-     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-     exibirRaca.text = racas[row]
-     exibirDesenho.image = racasImagens[row]
-     } */
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return racas.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "racaCell", for: indexPath) as? DogCollectionViewCell else {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "racaCell", for: indexPath) as? RacaTableViewCell else {
             fatalError("can't dequeue CustomCell")
         }
-        cell.configure(name: racas[indexPath.row], image: racasImagens[indexPath.row])
+        cell.configure(nome: racas[indexPath.row])
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 84, height: 102)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         exibirRaca.text = racas[indexPath.row]
-        exibirDesenho.image = racasImagens[indexPath.row]
-        viewToCollection.isHidden = true
+        exibirRaca.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
     }
     
 }

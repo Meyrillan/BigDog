@@ -14,7 +14,7 @@
 		E444287F240D8048009C1F05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E444287E240D8048009C1F05 /* Assets.xcassets */; };
 		E4442882240D8048009C1F05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4442880240D8048009C1F05 /* LaunchScreen.storyboard */; };
 		E466B2CF24182F35009F52A5 /* Cachorro.swift in Sources */ = {isa = PBXBuildFile; fileRef = E466B2CD241829AB009F52A5 /* Cachorro.swift */; };
-		E4F2997D241AC3CC00BA6B09 /* DogCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F2997B241AC3CC00BA6B09 /* DogCollectionViewCell.swift */; };
+		E46AF2FE2424A00E00F9991F /* RacaTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46AF2FD2424A00E00F9991F /* RacaTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 		E4442881240D8048009C1F05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E4442883240D8048009C1F05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E466B2CD241829AB009F52A5 /* Cachorro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cachorro.swift; sourceTree = "<group>"; };
-		E4F2997B241AC3CC00BA6B09 /* DogCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogCollectionViewCell.swift; sourceTree = "<group>"; };
+		E46AF2FD2424A00E00F9991F /* RacaTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RacaTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,11 +61,11 @@
 			isa = PBXGroup;
 			children = (
 				E4442875240D8044009C1F05 /* AppDelegate.swift */,
-				E4F2997B241AC3CC00BA6B09 /* DogCollectionViewCell.swift */,
 				E4442877240D8044009C1F05 /* SceneDelegate.swift */,
 				E4442879240D8044009C1F05 /* ViewController.swift */,
 				E466B2CD241829AB009F52A5 /* Cachorro.swift */,
 				E444287B240D8044009C1F05 /* Main.storyboard */,
+				E46AF2FD2424A00E00F9991F /* RacaTableViewCell.swift */,
 				E444287E240D8048009C1F05 /* Assets.xcassets */,
 				E4442880240D8048009C1F05 /* LaunchScreen.storyboard */,
 				E4442883240D8048009C1F05 /* Info.plist */,
@@ -146,8 +146,8 @@
 			files = (
 				E444287A240D8044009C1F05 /* ViewController.swift in Sources */,
 				E4442876240D8044009C1F05 /* AppDelegate.swift in Sources */,
-				E4F2997D241AC3CC00BA6B09 /* DogCollectionViewCell.swift in Sources */,
 				E466B2CF24182F35009F52A5 /* Cachorro.swift in Sources */,
+				E46AF2FE2424A00E00F9991F /* RacaTableViewCell.swift in Sources */,
 				E4442878240D8044009C1F05 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
