@@ -227,7 +227,7 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SRD" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NcQ-jZ-OfQ">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ex.: Vira-Lata (SRD)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NcQ-jZ-OfQ">
                                 <rect key="frame" x="235" y="187" width="156" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="16"/>
@@ -258,6 +258,7 @@
                         <outlet property="exibirRaca" destination="NcQ-jZ-OfQ" id="Bz0-dg-GuN"/>
                         <outlet property="fotoDog" destination="plK-i9-Qqh" id="5Hr-dQ-OK5"/>
                         <outlet property="idadeTextField" destination="drd-LW-bVs" id="bAs-Hl-goD"/>
+                        <outlet property="miniTitleRaca" destination="7p8-vt-kPR" id="DOC-xg-gIK"/>
                         <outlet property="nomeTextField" destination="a8t-N1-BiN" id="jJW-Uh-w5L"/>
                         <outlet property="pesoTextField" destination="f9Y-3H-sek" id="zIV-hR-qOt"/>
                         <outlet property="porteLabel" destination="11g-t1-LNe" id="9V9-hq-1Tw"/>

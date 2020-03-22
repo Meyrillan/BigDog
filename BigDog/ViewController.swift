@@ -9,10 +9,13 @@
 import UIKit
 import SwiftUI
 
-class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        preenchendoDados()
+        preenchendoImagem()
+        
         nomeTextField.delegate = self
         idadeTextField.delegate = self
         pesoTextField.delegate = self
@@ -29,16 +32,27 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
         areaIdadeButton.clipsToBounds = true
         areaPesoButton.layer.cornerRadius = 14
         areaPesoButton.clipsToBounds = true
-        exibirRaca.text = "Ex.: Vira-Lata (SRD)"
-        exibirRaca.textColor = UIColor(red: 0.3608, green: 0.4157, blue: 0.5961, alpha: 1.0)
-        fotoDog.image = UIImage(named: "dog")!
         fotoDog.layer.cornerRadius = 14
         fotoDog.clipsToBounds = true
         viewToTableView.layer.cornerRadius = 14
         viewToTableView.isHidden = true
+        exibirRaca.text = lerRaca()
+        corExibirRaca()
+//        fotoDog.image = UIImage(named: "dog")
+        prevenirErro()
     }
     
-    var racas: [String] = ["Vira-Lata (SRD)", "Pug", "Maltês", "Shih Tzu", "Buldogue", "Pit Bull", "Spitz Alemão", "Dachshund", "Pastor-Alemão", "Basset", "Schnauzer", "Poodle", "RottWeiler", "Labrador", "Pinscher", "Lhasa Apso", "Golden Retriever", "Yorkshire", "Border Collie", "Beagle"]
+    let defaults = UserDefaults.standard
+    
+    struct Keys {
+        static let nameData = "nameData"
+        static let idadeData = "idadeData"
+        static let pesoData = "pesoData"
+        static let racaData = "racaData"
+        static let imageData = "imageData"
+    }
+    
+    var racas: [String] = ["Vira-Lata (SRD)", "Pug", "Maltês", "Shih Tzu", "Buldogue", "Pit Bull", "Spitz Alemão", "Dachshund", "Pastor-Alemão", "Basset", "Schnauzer", "Poodle", "RottWeiler", "Labrador", "Pinscher", "Lhasa Apso", "Golden Retriever", "Yorkshire", "Border Collie", "Beagle", "Outra Raça"]
     
     var dog: Cachorro = Cachorro(nome: "", raca: "", racaDesenho: UIImage(named: "dog")!, idade: 0, peso: 0)
     
@@ -53,6 +67,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
     @IBOutlet var areaIdadeButton: UIButton!
     
     @IBOutlet var areaPesoButton: UIButton!
+    
+    @IBOutlet var miniTitleRaca: UILabel!
     
     @IBOutlet var exibirRaca: UILabel!
     
@@ -73,7 +89,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
     @IBOutlet var racasTableView: UITableView!
     
     @IBAction func escolherFoto(_ sender: Any) {
-        
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         
@@ -84,7 +99,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 imagePickerController.sourceType = .camera
                 self.present(imagePickerController, animated: true, completion: nil )
-                self.viewToTableView.isHidden = false
+                self.viewToTableView.isHidden = true
             } else {
                 let alert = UIAlertController(title: "", message: "Câmera não disponível.", preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: "Certo", style: UIAlertAction.Style.default, handler: nil))
@@ -95,25 +110,27 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
         
         actionSheet.addAction(UIAlertAction(title: "Galeria", style: .default, handler: { (action:UIAlertAction) in imagePickerController.sourceType = .photoLibrary
             self.present(imagePickerController, animated: true, completion: nil )
-            self.viewToTableView.isHidden = false
+            self.viewToTableView.isHidden = true
         }))
         
-        if fotoDog.image != UIImage(named: "dog")! {
-            actionSheet.addAction(UIAlertAction(title: "Apagar Foto", style: .destructive, handler: { (action:UIAlertAction) in
-                self.fotoDog.image = UIImage(named: "dog")!
-                self.viewToTableView.isHidden = false
-            }))
-        }
+//        if self.fotoDog.image != UIImage(named: "dog") {
+//            actionSheet.addAction(UIAlertAction(title: "Apagar Foto", style: .destructive, handler: { (action:UIAlertAction) in
+//                self.fotoDog.image = UIImage(named: "dog")
+//                self.viewToTableView.isHidden = false
+//                //nesse caso novaImagem() vai mostrar a image dog
+//                self.novaImagem()
+//            }))
+//        }
         
         actionSheet.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
         
         self.present(actionSheet, animated: true, completion: nil)
-        
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
         fotoDog.image = image
+        self.novaImagem()
         picker.dismiss(animated: true, completion: nil)
     }
     
@@ -136,8 +153,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
     }
     
     @IBAction func calcularButton(_ sender: UIButton) {
-        
-        dog = Cachorro(nome: lerNome(), raca: exibirRaca.text ?? "", racaDesenho: UIImage(named: "dog")!, idade: lerIdade(), peso: lerPeso())
+        novoDado()
+        dog = Cachorro(nome: lerNome(), raca: lerRaca(), racaDesenho: UIImage(named: "dog")!, idade: lerIdade(), peso: lerPeso())
         nomeTextField.resignFirstResponder()
         idadeTextField.resignFirstResponder()
         pesoTextField.resignFirstResponder()
@@ -174,15 +191,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
         pesoTextField.resignFirstResponder()
     }
     
+    func corExibirRaca() {
+        if exibirRaca.text == "Ex.: Vira-Lata (SRD)" {
+            exibirRaca.textColor = UIColor(red: 0.3608, green: 0.4157, blue: 0.5961, alpha: 1.0)
+        }
+    }
+    
     func lerNome() -> String {
-        let nome = nomeTextField.text!
+        let nome = nomeTextField.text ?? ""
         return nome
     }
     
     func lerPeso() -> Float {
         // pegar texto do text field peso, transformar em numero, guardar o peso
         let peso = pesoTextField.text ?? ""
-        
         // transformar o texto em int
         let pesoFloat = Float(peso) ?? 0
         
@@ -195,6 +217,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
         let idadeInt = Int(idade) ?? 0
         
         return idadeInt
+    }
+    
+    func lerRaca() -> String {
+        let raca = exibirRaca.text ?? "Ex.: Vira-Lata (SRD)"
+        return raca
     }
     
     func MedidaCertaParaRaca() -> String {
@@ -281,6 +308,51 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         exibirRaca.text = racas[indexPath.row]
         exibirRaca.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
+        novoDado()
+        if exibirRaca.text == "Outra Raça" {
+            exibirRaca.text = ""
+            miniTitleRaca.text = ""
+        } else {
+            miniTitleRaca.text = "Raça"
+        }
+    }
+    
+    func prevenirErro() {
+        
+        if defaults.object(forKey: "imageData") == nil {
+            // 3. If there is not an object, then set a default. This will
+            //    not be ran if there is an object.
+            defaults.set(UIImage(named: "dog")?.pngData(), forKey: "imageData")
+        }
+    }
+    
+    func preenchendoImagem() {
+        prevenirErro()
+        let dados: NSData = defaults.object(forKey: Keys.imageData) as! NSData
+        // buscando a imagem para preencher o campo fotoDog
+        fotoDog.image = UIImage(data: dados as Data)
+        //        print("buscando\(fotoDog.image!)")
+    }
+    
+    func novaImagem() {
+        //  let image = UIImage(named: "dog")
+        let imageData: NSData = fotoDog.image!.pngData()! as NSData
+        defaults.set(imageData, forKey: Keys.imageData)
+        //        print("saving\(fotoDog.image!)")
+    }
+    
+    func preenchendoDados() {
+        nomeTextField.text = defaults.string(forKey: Keys.nameData)
+        idadeTextField.text = defaults.string(forKey: Keys.idadeData)
+        pesoTextField.text = defaults.string(forKey: Keys.pesoData)
+        exibirRaca.text = defaults.string(forKey: Keys.racaData)
+    }
+    
+    func novoDado() {
+        defaults.set(lerNome(), forKey: Keys.nameData)
+        defaults.set(lerIdade(), forKey: Keys.idadeData)
+        defaults.set(lerPeso(), forKey: Keys.pesoData)
+        defaults.set(lerRaca(), forKey: Keys.racaData)
     }
     
 }
